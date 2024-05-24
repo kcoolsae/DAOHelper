@@ -1,0 +1,10 @@
+.idea
+.bsp
+*.iml
+*.class
+*.jar
+/lib
+/etc
+/logs
+/project/project
+target
