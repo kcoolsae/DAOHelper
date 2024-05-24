@@ -39,14 +39,12 @@ To run the unit tests, execute the following command from the top level project 
 
 ## Building the library
 
-### When you have a local IVY repository
-The following command, executed from the top level project directory, installs the library into the local ivy repository 
+The following command, executed from the top level project directory, installs the library into the local ivy repository
 
-    $ sbt clean publish-local
+    $ sbt clean publishLocal
 
-### When not
-Use the following command from the top level project directory
+Alternatively, using the following command from the top level project directory
 
     $ sbt clean package
 
-This creates the file `daohelper-1.1.12.jar` in the `target` directory.
+will create the file `daohelper-1.1.12.jar` in the `target` directory.

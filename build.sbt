@@ -7,7 +7,6 @@
  * in the top level project directory.
  */
 
-
 name := "DAOHelper"
 
 normalizedName := "daohelper"
