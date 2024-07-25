@@ -47,4 +47,4 @@ Alternatively, using the following command from the top level project directory
 
     $ sbt clean package
 
-will create the file `daohelper-1.1.12.jar` in the `target` directory.
+will create the file `daohelper-1.1.13.jar` in the `target` directory.

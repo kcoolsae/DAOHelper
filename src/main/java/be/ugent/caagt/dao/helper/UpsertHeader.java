@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 /**
- * Represents an upsert statement. Allows key clauses followed by value clauses. Can be finalizes by calling {@link #execute}
+ * Represents an upsert statement. Allows key clauses followed by value clauses. Can be finalized by calling {@link #execute}
  * but then no updates will be done in case of conflict.
  */
 public class UpsertHeader extends InsertOrUpsert<UpsertSQLStatement> {

@@ -64,5 +64,49 @@ public interface SupportsWhere<T> {
         return where(new WhereClause(clause, parameter));
     }
 
+    default T where(String clause, String[] parameter) {
+        return where(clause, parameter, "TEXT");
+    }
+
+    default T where(String clause, String[][] parameter) {
+        return where(clause, parameter, "TEXT");
+    }
+
+    default T where(String clause, Integer[] parameter) {
+        return where(clause, parameter, "INTEGER");
+    }
+
+    default T where(String clause, Integer[][] parameter) {
+        return where(clause, parameter, "INTEGER");
+    }
+
+    default T where(String clause, Double[] parameter) {
+        return where(clause, parameter, "float8");
+    }
+
+    default T where(String clause, Double[][] parameter) {
+        return where(clause, parameter, "float8");
+    }
+
+    default T where(String clause, int[] parameter) {
+        return where(new WhereClause(clause, new IntArrayParameter(parameter)));
+    }
+
+    default T where(String clause, int[][] parameter) {
+        return where(new WhereClause(clause, new Int2DimArrayParameter(parameter)));
+    }
+
+    default T where(String clause, double[] parameter) {
+        return where(new WhereClause(clause, new DoubleArrayParameter(parameter)));
+    }
+
+    default T where(String clause, double[][] parameter) {
+        return where(new WhereClause(clause, new Double2DimArrayParameter(parameter)));
+    }
+
+    default T where(String clause, Object[] parameter, String typeName) {
+        return where(new WhereClause(clause, new SqlArrayParameter(parameter, typeName)));
+    }
+
     <E extends Enum<E>> T where(String clause, E parameter);
 }

@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Implementation of {@link Parameter} for ints.
+ * Implementation of {@link Parameter} for integers.
  */
 public class IntParameter implements Parameter {
 

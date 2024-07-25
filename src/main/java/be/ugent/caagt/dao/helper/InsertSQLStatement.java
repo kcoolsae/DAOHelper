@@ -60,8 +60,8 @@ public class InsertSQLStatement extends InsertOrUpsert<InsertSQLStatement> {
     }
 
     /**
-     * Same as {@link #create()} but returns the field explicitely named as a parameter. Useful when the
-     * generated key is not in the first column of the table. Might also be slightly faster because less data
+     * Same as {@link #create()} but returns the field explicitly named as a parameter. Useful when the
+     * generated key is not in the first column of the table. Might also be slightly faster because fewer data
      * is sent from server to client.
      */
     public int create(String columnName) throws DataAccessException {

@@ -13,6 +13,14 @@ although most of its methods would probably work on any SQL database.
 
 **Also note** Features from 1.1.6 onwards are not yet fully documented.
 
+#### New in version 1.1.13
+* Where clauses can use array parameters, for example
+
+      int[] ids = {1,2,3};
+      select("name").from("persons")
+          .where("id = ANY(?)", ids) 
+          .getList(rs -> rs.getString("name"));
+
 #### New in version 1.1.12
 * Translation of enumerated types can be configured
 * `parameter` methods now support arrays
@@ -42,7 +50,7 @@ although most of its methods would probably work on any SQL database.
 #### New in version 1.1.6
 * Support for doubles
 
-### New in version 1.1.5
+#### New in version 1.1.5
 
 * [Grouping where clauses](#grouping-where-clauses)
 
@@ -55,7 +63,6 @@ although most of its methods would probably work on any SQL database.
 * [Specials](#specials)
 * [Grouping where clauses](#grouping-where-clauses)
 * [Exceptions](#exceptions)
-* [Running the unit tests](#running-the-unit-tests)
 
 DAO pattern
 ----
@@ -171,7 +178,7 @@ Some array types are also supported, in particular `String[]`, `Integer[]` and `
 but workarounds exist by calling more general methods and/or subclassing `Parameter` (see source).
 
 Also enumerated types are supported, provided you follow the following conventions:
-* The name of the Java enumerated type and the PostgresQL enumerated typ must be the same
+* The name of the Java enumerated type and the PostgresQL enumerated type must be the same
 * The PostgreSQL enumerated type elements must be the same as the element names, and also in upper case.
 * For example, in Postgres:
 
@@ -194,8 +201,8 @@ The simplest select statements are those that expect a single result
         .getOneInt();
         
 The methode `getOneInt` throws an exception when the select returns no results or
-more than a single result. A variant `getInt` throws an exception when there
-is more than one result, or 0 when there is no result.
+more than a single result. A variant `getInt` returns 0 when there is no result and throws an exception when there
+is more than one result.
 
      int userId = select("id").from("users")
          .where("name", someName).getInt();

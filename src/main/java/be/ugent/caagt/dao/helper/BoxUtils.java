@@ -11,7 +11,7 @@ package be.ugent.caagt.dao.helper;
 
 public final class BoxUtils {
 
-    // There is no standard Java implementation of the methods below and we did not want to pull in the entire Apache Commons Lang for this
+    // There is no standard Java implementation of the methods below, and we did not want to pull in the entire Apache Commons Lang for this
 
     public static Integer[] boxArray(int[] array) {
         if (array == null) {

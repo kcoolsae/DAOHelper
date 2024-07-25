@@ -10,7 +10,7 @@
 package be.ugent.caagt.dao;
 
 /**
- * Indicates an violation of a unique key when doing a database update
+ * Indicates a violation of a uniqueness contstraint when doing a database update
  */
 public class UniqueViolation extends DataAccessException {
 

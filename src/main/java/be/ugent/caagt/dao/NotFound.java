@@ -10,7 +10,7 @@
 package be.ugent.caagt.dao;
 
 /**
- * This exception is thrown when a database search for a specific key or id does not
+ * This exception is thrown when a database search for a specific key or id
  * returns no result although a result was expected.
  */
 public class NotFound extends DataAccessException {

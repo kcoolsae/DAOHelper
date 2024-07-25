@@ -33,35 +33,6 @@ public class LimitedSQLStatement extends AbstractQueryStatement {
         }
     }
 
-    /*  TODO
-
-WITH XXXX AS MATERIALIZED (
-   SELECT graph.graph_id, canonicalform, graphname, user_id, upload_id
-   FROM graph JOIN graph_invariant
-   ON graph.graph_id = graph_invariant.graph_id
-       WHERE invariant_id = 15 AND invariantvalue> 1
-) SELECT *, COUNT(*) OVER () FROM XXXX
-ORDER BY graph_id ASC OFFSET 0 ROWS FETCH FIRST 5 ROWS ONLY;
-
-     */
-
-    private String getCountStatement() {
-        String countStat = stat;
-        int fromPos = countStat.indexOf("FROM");
-        int lastPos = countStat.lastIndexOf("ORDER BY");
-        /* not needed: there will always be an ORDER BY because the statement can
-           (currently) only be constructed from an ordered statement.
-
-        if (lastPos < 0) {
-            lastPos = countStat.lastIndexOf("OFFSET");
-            if (lastPos < 0) {
-                lastPos = countStat.length();
-            }
-        }
-        */
-        return "SELECT COUNT(*) " + countStat.substring(fromPos, lastPos);
-    }
-
     // Adds the total count to the query result of a compound statement
     private String createPageStatementCompound(String cntId) {
         int lastPos = stat.lastIndexOf("OFFSET");

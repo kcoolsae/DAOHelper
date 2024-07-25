@@ -12,7 +12,7 @@ package be.ugent.caagt.dao.helper;
 /**
  * Represents a select statement for the special case where no table is given.
  * This kind of statement is particularly useful when calling functions.
- * No with, ordered by or limit clauses are allowed here.
+ * With, ordered by or limit clauses are not allowed here.
  */
 public class RestrictedSelectSQLStatement extends AbstractQueryStatement {
 
