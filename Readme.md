@@ -17,6 +17,7 @@ although most of its methods would probably work on any SQL database.
   Previously `findInt`, `findDouble` and `findBoolean` returned 0 or false for a `NULL` value,
   and the other finders threw a `NullPointerException`.
   See [Finders](#finders).
+* `set` now supports `String[][]`
 * Documentation brought up to date with the features added since version 1.1.6
 
 #### New in version 1.1.13.1
@@ -207,8 +208,7 @@ support the following data types: `boolean`, `int`, `double` (SQL type: DOUBLE P
 
 The following array types are also supported (not for `key`): `String[]`, `Integer[]`, `int[]`,
 `Double[]` and `double[]`, and their 2-dimensional
-counterparts `String[][]`, `Integer[][]`, `int[][]`, `Double[][]` and `double[][]` (but `set` does not yet
-support `String[][]`).
+counterparts `String[][]`, `Integer[][]`, `int[][]`, `Double[][]` and `double[][]`.
 (Internally arrays of `int` and `double` are converted to and from arrays of `Integer` and `Double`.)
 Other array types can be used with the more general methods that take an `Object[]` and the name of the
 SQL element type, for example

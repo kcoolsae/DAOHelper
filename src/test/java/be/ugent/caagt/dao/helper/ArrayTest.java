@@ -103,6 +103,16 @@ public class ArrayTest extends TestDAO {
     }
 
     @Test
+    public void update2DimStrings() {
+        update("arrayTable")
+                .set("strs", new String[][]{{"p", "q"}, {"r", "s"}}).where("id", 8)
+                .executeUpdate();
+        String[][] strs = select("strs").from ("arrayTable").where("id", 8).get2DimArrayOfString();
+        assertThat (strs[0]).containsExactly("p", "q");
+        assertThat (strs[1]).containsExactly("r", "s");
+    }
+
+    @Test
     public void updateInts() {
         update("arrayTable")
                 .set("ints", new int[]{13, 10}).where("id", 2)

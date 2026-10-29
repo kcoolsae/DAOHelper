@@ -114,6 +114,10 @@ public class UpdateSQLStatement extends AbstractSQLStatement implements Supports
         return set(name, parameter, "TEXT");
     }
 
+    public UpdateSQLStatement set(String name, String[][] parameter) {
+        return set(name, parameter, "TEXT");
+    }
+
     public UpdateSQLStatement set(String name, Integer[] parameter) {
         return set(name, parameter, "INTEGER");
     }
