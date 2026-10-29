@@ -11,7 +11,7 @@ name := "DAOHelper"
 
 normalizedName := "daohelper"
 
-version := "1.1.13.1"
+version := "1.1.14"
 
 organization := "be.ugent.caagt"
 

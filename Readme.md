@@ -13,6 +13,13 @@ although most of its methods would probably work on any SQL database.
 
 **Also note** Features from 1.1.6 onwards are not yet fully documented.
 
+#### New in version 1.1.14
+* **Changed behaviour:** the `find` methods (`findInt`, `findString`, `findObject`, …) now return an empty
+  result both when the query returns no row and when the value is `NULL`.
+  Previously `findInt`, `findDouble` and `findBoolean` returned 0 or false for a `NULL` value,
+  and the other finders threw a `NullPointerException`.
+  See [Finders](#finders).
+
 #### New in version 1.1.13.1
 * Bug fix: enumerated type parameters can now be `null`, for example
 
@@ -221,6 +228,23 @@ Similar `get` and`getOne` methods exist for `String` and the four supported
  date/time data types.
 The `get` methods return `null` when there is no result. There is also
 a `getOneBoolean`.
+
+#### Finders
+
+For queries that may or may not return a result, the `find` methods return an `Optional`
+(or `OptionalInt`, `OptionalDouble`) instead
+
+    Optional<String> name = select("name").from("persons")
+        .where("id", someId)
+        .findString();
+
+The result is empty when the query returns no row, but also when the selected value is `NULL`.
+When you need to distinguish between these two cases, use `findObject` with a converter for the
+entire row. The result is then present whenever the row exists, even when some of its values are `NULL`
+
+    Optional<Person> person = select("name, firstName").from("persons")
+        .where("id", someId)
+        .findObject(rs -> new Person(rs.getString("name"), rs.getString("firstName")));
 
 For multicolumn queries you can use `getObject` or `getOneObject`, but then
 you must provide a `ResultSetConverter` which translates a result set row into 

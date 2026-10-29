@@ -70,6 +70,7 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
 
     /**
      * Return the query result as an optional int.
+     * The result is empty when the query returns no row or when the value is NULL.
      *
      * @throws AnswerNotUnique when the query resulted in more than one row
      */
@@ -79,10 +80,11 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int result = rs.getInt(1);
+                    boolean isNull = rs.wasNull();
                     if (rs.next()) {
                         throw new AnswerNotUnique("Expected a single integer result");
                     } else {
-                        return OptionalInt.of(result);
+                        return isNull ? OptionalInt.empty() : OptionalInt.of(result);
                     }
                 } else {
                     return OptionalInt.empty();
@@ -120,6 +122,7 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
 
     /**
      * Return the query result as an optional double
+     * The result is empty when the query returns no row or when the value is NULL.
      *
      * @throws AnswerNotUnique when the query resulted in more than one row
      */
@@ -129,10 +132,11 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     double result = rs.getDouble(1);
+                    boolean isNull = rs.wasNull();
                     if (rs.next()) {
                         throw new AnswerNotUnique("Expected a single double precision result");
                     } else {
-                        return OptionalDouble.of(result);
+                        return isNull ? OptionalDouble.empty() : OptionalDouble.of(result);
                     }
                 } else {
                     return OptionalDouble.empty();
@@ -178,11 +182,15 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
 
     /**
      * Return the query result as an optional boolean.
+     * The result is empty when the query returns no row or when the value is NULL.
      *
      * @throws AnswerNotUnique when the query resulted in more than one row
      */
     public Optional<Boolean> findBoolean() throws DataAccessException {
-        return findObject(ResultSetConverter.FIRST_BOOLEAN);
+        return findObject(rs -> {
+            boolean result = rs.getBoolean(1);
+            return rs.wasNull() ? null : result;
+        });
     }
 
     /**
@@ -245,7 +253,8 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
     }
 
     /**
-     * Return the query result as a single String.
+     * Return the query result as an optional String.
+     * The result is empty when the query returns no row or when the value is NULL.
      *
      * @throws AnswerNotUnique when the query resulted in more than one row
      */
@@ -321,6 +330,7 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
 
     /**
      * Return the query result as an optional object.
+     * The result is empty when the query returns no row or when the converter returns null.
      *
      * @throws AnswerNotUnique when the query resulted in more than one row
      */
@@ -333,7 +343,7 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
                     if (rs.next()) {
                         throw new AnswerNotUnique("Expected a single row as result");
                     } else {
-                        return Optional.of(result);
+                        return Optional.ofNullable(result);
                     }
                 } else {
                     return Optional.empty();

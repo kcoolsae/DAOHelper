@@ -88,6 +88,9 @@ public class EnumTest extends TestDAO {
         assertThat(
                 select("1").from("colors").where("id", 14).where("color IS NULL").isEmpty()
         ).isFalse();
+        assertThat(
+                select("color").from("colors").where("id", 14).findEnum(Color.class)
+        ).isNotPresent();
     }
 
     @Test
