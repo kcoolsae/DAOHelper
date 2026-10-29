@@ -576,7 +576,8 @@ abstract class AbstractQueryStatement extends AbstractFilteredStatement {
 
         @Override
         public E convert(ResultSet rs) throws SQLException {
-            return Enum.valueOf(enumClass, rs.getString(1));
+            String name = rs.getString(1);
+            return name == null ? null : Enum.valueOf(enumClass, name);
         }
     }
 

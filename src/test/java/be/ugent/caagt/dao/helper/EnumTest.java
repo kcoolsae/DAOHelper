@@ -76,4 +76,60 @@ public class EnumTest extends TestDAO {
         ).isEqualTo("Blueish");
     }
 
+    @Test
+    public void insertNull() {
+        insertInto("colors")
+                .value("id", 14)
+                .value("color", (Color) null)
+                .execute();
+        assertThat(
+                select("color").from("colors").where("id", 14).getEnum(Color.class)
+        ).isNull();
+        assertThat(
+                select("1").from("colors").where("id", 14).where("color IS NULL").isEmpty()
+        ).isFalse();
+    }
+
+    @Test
+    public void updateNull() {
+        update("colors").set("color", (Color) null).where("id", 13).execute();
+        assertThat(
+                select("color").from("colors").where("id", 13).getEnum(Color.class)
+        ).isNull();
+    }
+
+    @Test
+    public void upsertNull() {
+        insertOrUpdateInto("colors")
+                .key("id", 13)
+                .value("color", (Color) null)
+                .execute();
+        assertThat(
+                select("color").from("colors").where("id", 13).getEnum(Color.class)
+        ).isNull();
+        insertOrUpdateInto("colors")
+                .key("id", 13)
+                .value("color", Color.RED)
+                .execute();
+        assertThat(
+                select("color").from("colors").where("id", 13).getEnum(Color.class)
+        ).isEqualTo(Color.RED);
+    }
+
+    enum Shape {
+        CIRCLE {
+            @Override
+            public String toString() {
+                return "CIRCLE";
+            }
+        }
+    }
+
+    @Test
+    public void constantWithBody() {
+        assertThat(
+                new EnumParameter<>(Shape.CIRCLE, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+        ).isEqualTo("?::shape");
+    }
+
 }

@@ -11,6 +11,7 @@ package be.ugent.caagt.dao.helper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class EnumParameter<E extends Enum<E>> implements Parameter {
 
@@ -25,11 +26,23 @@ public class EnumParameter<E extends Enum<E>> implements Parameter {
 
     @Override
     public void setParameter(PreparedStatement ps, int index) throws SQLException {
-        ps.setString(index, par.toString());
+        if (par == null) {
+            ps.setNull(index, Types.OTHER); // database type is inferred from the context
+        } else {
+            ps.setString(index, par.toString());
+        }
     }
 
+    /**
+     * Returns a question mark with a cast to the corresponding database type. For a null value the
+     * enum class is unknown and then a plain question mark is returned.
+     */
     @Override
     public String getQuestionMark() {
-        return "?::" + enumClassTranslator.translate(par.getClass().getSimpleName());
+        if (par == null) {
+            return "?";
+        } else {
+            return "?::" + enumClassTranslator.translate(par.getDeclaringClass().getSimpleName());
+        }
     }
 }

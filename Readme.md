@@ -13,6 +13,13 @@ although most of its methods would probably work on any SQL database.
 
 **Also note** Features from 1.1.6 onwards are not yet fully documented.
 
+#### New in version 1.1.13.1
+* Bug fix: enumerated type parameters can now be `null`, for example
+
+      insertInto("colors").value("color", (Color) null).execute();
+* Bug fix: `getEnum` and `getOneEnum` now return `null` when the database value is `NULL`
+* Bug fix: enum constants with a body are now translated to the correct database type
+
 #### New in version 1.1.13
 * Where clauses can use array parameters, for example
 
