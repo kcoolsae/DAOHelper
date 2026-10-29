@@ -11,14 +11,13 @@ and base classes to ease the use of the **data access object** design pattern.
 **Important note** The library should only be used on a PostgreSQL database, 
 although most of its methods would probably work on any SQL database.
 
-**Also note** Features from 1.1.6 onwards are not yet fully documented.
-
 #### New in version 1.1.14
 * **Changed behaviour:** the `find` methods (`findInt`, `findString`, `findObject`, …) now return an empty
   result both when the query returns no row and when the value is `NULL`.
   Previously `findInt`, `findDouble` and `findBoolean` returned 0 or false for a `NULL` value,
   and the other finders threw a `NullPointerException`.
   See [Finders](#finders).
+* Documentation brought up to date with the features added since version 1.1.6
 
 #### New in version 1.1.13.1
 * Bug fix: enumerated type parameters can now be `null`, for example
@@ -92,6 +91,25 @@ the same database connection. DACs also provide transaction support. DACs are de
 DAC implementations must extend `BaseDAC`
 * DACs must be retreived from a _data access provider_ (DAP). A DAP is an abstraction of a database. Clients are responsible
 for implementing the DAP, there is no direct support from this library.
+
+Transactions are started, committed and rolled back through the DAC
+
+    try (DataAccessContext dac = provider.getContext()) {
+        dac.begin();
+        try {
+            dac.getPersonDao().deletePerson(someId);
+            dac.getAddressDao().deleteAddressesOf(someId);
+            dac.commit();
+        } catch (RuntimeException ex) {
+            dac.rollback();
+            throw ex;
+        }
+    }
+
+(Here `DataAccessContext`, `getPersonDao` and `getAddressDao` are your own classes and methods.)
+Without a call to `begin` every statement is committed immediately. Closing a DAC
+restores this auto-commit behaviour. Note that this also commits a transaction that is still open,
+hence the explicit `rollback` in the example.
 
 Utility methods
 ---
@@ -182,17 +200,27 @@ A where clause can also be without parameter
 ### Data types
 
 The `value`, `where` and `set` methods (and also `parameter` and `key` - see later)
-support the following data types: `boolean`, `int`, 
-`String`,
-`LocalDate` (SQL type: DATE), `LocalTime` (TIME), 
+support the following data types: `boolean`, `int`, `double` (SQL type: DOUBLE PRECISION),
+`String`, `byte[]` (BYTEA),
+`LocalDate` (DATE), `LocalTime` (TIME), 
 `LocalDateTime` (TIMESTAMP) and `Instant` (TIMESTAMP WITH TIMEZONE).
 
-Some array types are also supported, in particular `String[]`, `Integer[]` and `int[]`. 
-(Internally the latter is converted to and from `Integer[]`.) Other array types can currently not be used directly
-but workarounds exist by calling more general methods and/or subclassing `Parameter` (see source).
+The following array types are also supported (not for `key`): `String[]`, `Integer[]`, `int[]`,
+`Double[]` and `double[]`, and their 2-dimensional
+counterparts `String[][]`, `Integer[][]`, `int[][]`, `Double[][]` and `double[][]` (but `set` does not yet
+support `String[][]`).
+(Internally arrays of `int` and `double` are converted to and from arrays of `Integer` and `Double`.)
+Other array types can be used with the more general methods that take an `Object[]` and the name of the
+SQL element type, for example
+
+    Long[] someLongs = ...;
+    insertInto("myTable").value("longs", someLongs, "BIGINT").execute();
+
+or by implementing the `Parameter` interface (see source).
 
 Also enumerated types are supported, provided you follow the following conventions:
-* The name of the Java enumerated type and the PostgresQL enumerated type must be the same
+* The name of the PostgreSQL enumerated type is the name of the Java enumerated type, in 'snake case'.
+  For example, a Java type `ColorName` corresponds to a PostgreSQL type `color_name`.
 * The PostgreSQL enumerated type elements must be the same as the element names, and also in upper case.
 * For example, in Postgres:
 
@@ -202,6 +230,14 @@ Also enumerated types are supported, provided you follow the following conventio
       enum Color {
            BLUE, RED, GREEN;
       }
+
+To use a different translation of type names, override the method `getEnumClassTranslator`
+in your DAC (a subclass of `BaseDAC`). For example, return `EnumClassNameTranslator.NO_OP` to use
+the Java type name unchanged, or provide your own implementation of `EnumClassNameTranslator`.
+
+Enum parameters may be `null`, but then a cast is needed to select the correct method
+
+    insertInto("colors").value("color", (Color) null).execute();
            
 ### Select
 
@@ -224,10 +260,22 @@ is more than one result.
 (For ease of use, the database should be set up in such a way that 
 record identifiers of value 0 are avoided where possible.) 
 
-Similar `get` and`getOne` methods exist for `String` and the four supported
- date/time data types.
-The `get` methods return `null` when there is no result. There is also
-a `getOneBoolean`.
+Similar `get` and `getOne` methods exist for `double`, `String`, the four supported
+date/time data types and enumerated types.
+The `get` methods return `null` when there is no result (`getDouble` returns `NaN`). There are also
+`getBoolean` (returns `false` when there is no result) and `getOneBoolean`.
+Enumerated types need the class as an argument
+
+    Color color = select("color").from("colors").where("id", someId).getEnum(Color.class);
+
+Strings have two more variants: `getStringOrEmpty` returns an empty string, and `getStringOrDefault(defaultValue)`
+the given default value, when there is no result.
+
+Byte arrays and arrays are retrieved with `getBytes` and with methods like `getArrayOfString`, `getArrayOfInt`,
+`getArrayOfInteger`, `getArrayOfDouble`, `getArrayOfWrappedDouble`, and the corresponding `get2DimArrayOf...`.
+These return `null` when there is no result.
+
+    int[] numbers = select("ints").from("arrayTable").where("id", someId).getArrayOfInt();
 
 #### Finders
 
@@ -269,6 +317,11 @@ For queries that potentially return more than one result, you use `getList`
 There is also a method `isEmpty` which checks whether a query returns 0 rows
         
     boolean noDebt = select ("1").from("invoices").where("not paid").isEmpty();        
+
+To handle each row of the result yourself, without building a result, use `process`
+
+    select("name, firstName").from("persons")
+        .process(rs -> System.out.println(rs.getString("name")));
 
 ### Sorting and paging
 
@@ -426,6 +479,17 @@ with subselects or for certain types of join:
 (Returns a list with all persons with an address or NULL depending on whether there is 
 an address for that person with a given zip code or not.)        
 
+### Intersection
+
+The method `intersection` combines two or more select statements with SQL `INTERSECT`. The result
+can be sorted, paged and retrieved like an ordinary select
+
+    List<Integer> ids = intersection(
+            select("id").from("persons").where("flag", true),
+            select("userId").from("addresses").where("town", someTown)
+        ).orderBy("id")
+        .getList(rs -> rs.getInt(1));
+
 ### Low level calls
 
 There is a general `sql` method which allows you to execute statements that cannot be formulated with any of the other
@@ -446,7 +510,7 @@ Using a `CompositeWhereClause` may make this easier for you.
 In this example you would first create a method `hasLocale` as follows
 
     protected CompositeWhereClause hasLocale (Locale locale) {
-        return new CompositeWhereClause()
+        return compositeWhereClause()
             .where ("language", locale.getLanguage())
             .where ("country", locale.getCountry())
             .where ("variant", locale.getVariant());
