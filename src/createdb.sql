@@ -1,6 +1,6 @@
 -- createdb.sql
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Copyright © 2016-2024 Kris Coolsaet (Universiteit Gent)
+-- Copyright © 2016-2026 Kris Coolsaet (Universiteit Gent)
 --
 -- This software is distributed under the MIT License - see files LICENSE and AUTHORS
 -- in the top level project directory.
