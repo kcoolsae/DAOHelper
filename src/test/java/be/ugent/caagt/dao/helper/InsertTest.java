@@ -9,6 +9,7 @@
 
 package be.ugent.caagt.dao.helper;
 
+import be.ugent.caagt.dao.DataAccessException;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -155,6 +156,13 @@ public class InsertTest extends TestDAO {
                 .parameter("Doe")
                 .parameter("John")
                 .parameter(7).execute();
+    }
+
+    @Test(expected=DataAccessException.class)
+    public void insertWithTooFewParameters () {
+        sql ("INSERT INTO persons(name,first_name) VALUES(?,?)")
+                .parameter("Doe")
+                .execute();
     }
 
     @Test

@@ -40,6 +40,14 @@ public class CallTest extends TestDAO {
     }
 
     @Test
+    public void untypedParameter() {
+        // the type of the parameter is not inferred from the context
+        assertThat(
+                select("?").parameter(17).noFrom().getInt()
+        ).isEqualTo(17);
+    }
+
+    @Test
     public void existsWithoutFrom() {
         insertInto("persons").value("name", "Doe").value("flag", false).execute();
         assertThat(

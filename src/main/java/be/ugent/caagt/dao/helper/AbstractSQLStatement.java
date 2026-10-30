@@ -57,13 +57,22 @@ abstract class AbstractSQLStatement {
     }
 
     //
+    /**
+     * Fills in all parameters. Too many parameters cause an {@link IllegalArgumentException}. Too few
+     * parameters are only detected by the driver when the statement is executed.
+     */
     protected void initParameters(PreparedStatement ps) throws SQLException {
-        if (params.size() != ps.getParameterMetaData().getParameterCount()) {
-            throw new IllegalArgumentException("Incorrect nr of parameters");
-        }
         int index = 1;
         for (Parameter param : params) {
-            param.setParameter(ps, index);
+            try {
+                param.setParameter(ps, index);
+            } catch (SQLException ex) {
+                if ("22023".equals(ex.getSQLState())) {
+                    // invalid parameter value, e.g., the index is out of range
+                    throw new IllegalArgumentException("Incorrect parameter " + index + ": " + ex.getMessage(), ex);
+                }
+                throw ex;
+            }
             index++;
         }
     }

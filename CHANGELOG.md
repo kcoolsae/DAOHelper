@@ -9,6 +9,11 @@ Changes
   Previously `findInt`, `findDouble` and `findBoolean` returned 0 or false for a `NULL` value,
   and the other finders threw a `NullPointerException`.
   See [Finders](docs/queries.md#finders).
+* **Changed behaviour:** the number of parameters is no longer checked in advance, which saves
+  a round trip to the database for every statement. A `?` that has no type from its context (for example
+  `select("?").parameter(17).noFrom()`) now gets the type of the Java value instead of `text`.
+  Too many parameters still cause an `IllegalArgumentException`, but too few parameters now cause a
+  `DataAccessException` when the statement is executed.
 * `set` now supports `String[][]`
 * Updates can take values from other tables with `from` (PostgreSQL `UPDATE … FROM`).
   See [Delete / update](docs/statements.md#delete--update).

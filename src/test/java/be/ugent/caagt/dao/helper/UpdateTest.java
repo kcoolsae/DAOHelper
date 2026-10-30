@@ -265,6 +265,17 @@ public class UpdateTest extends TestDAO {
     }
 
     @Test
+    public void updateFromWithUntypedParameter() {
+        update("persons")
+                .set("number = v.nr")
+                .from("(SELECT ? AS nr) AS v")
+                .parameter(17)
+                .where("id", key)
+                .execute();
+        checkNumberBecame17();
+    }
+
+    @Test
     public void updateFromWithModifier() {
         insertInto("details").value("id", key).value("nr", 17).execute();
         update("persons")
