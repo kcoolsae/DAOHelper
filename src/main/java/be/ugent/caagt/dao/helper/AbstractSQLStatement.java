@@ -70,8 +70,9 @@ abstract class AbstractSQLStatement {
                 if ("22023".equals(ex.getSQLState())) {
                     // invalid parameter value, e.g., the index is out of range
                     throw new IllegalArgumentException("Incorrect parameter " + index + ": " + ex.getMessage(), ex);
+                } else {
+                    throw ex;
                 }
-                throw ex;
             }
             index++;
         }
