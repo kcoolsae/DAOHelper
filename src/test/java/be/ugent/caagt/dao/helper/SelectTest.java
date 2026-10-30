@@ -292,7 +292,7 @@ public class SelectTest extends TestDAO {
                 select("number")
                         .from("persons")
                         .where(
-                                new NamedParameterList()
+                                namedParameterList()
                                         .with("name", "Bond")
                                         .with("first_name", "James")
                         )

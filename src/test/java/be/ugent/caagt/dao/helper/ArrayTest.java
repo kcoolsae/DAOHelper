@@ -198,4 +198,41 @@ public class ArrayTest extends TestDAO {
         assertThat(result[1][0]).isEqualTo(3);
         assertThat(result[1][1]).isEqualTo(4);
     }
+
+    @Test
+    public void upsertArrayKey() {
+        insertOrUpdateInto("arrayTable")
+                .key("id", new IntParameter(9))
+                .key("ints", INT_ARRAY)
+                .key("strs", STRING_ARRAY)
+                .execute();
+        assertThat(
+                select("ints").from("arrayTable").where("id", 9).getArrayOfInt()
+        ).containsExactly(INT_ARRAY);
+    }
+
+    @Test
+    public void namedParameterListWithArray() {
+        double[] doubles = {7.0, 8.0};
+        insertInto("arrayTable")
+                .value(namedParameterList()
+                        .with("id", 10)
+                        .with("doubles", doubles))
+                .execute();
+        assertThat(
+                select("id").from("arrayTable")
+                        .where(namedParameterList().with("doubles", doubles))
+                        .getInt()
+        ).isEqualTo(10);
+    }
+
+    @Test
+    public void havingArray() {
+        assertThat(
+                select("count(*)").from("arrayTable")
+                        .groupBy("ints")
+                        .having("ints = ?", INT_ARRAY)
+                        .getInt()
+        ).isEqualTo(1);
+    }
 }

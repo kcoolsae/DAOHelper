@@ -97,4 +97,11 @@ public abstract class BaseDAC implements AutoCloseable {
         return new CompositeWhereClause(getEnumClassTranslator());
     }
 
+    /**
+     * Create an empty list of named parameters
+     */
+    protected NamedParameterList namedParameterList() {
+        return new NamedParameterList(getEnumClassTranslator());
+    }
+
 }

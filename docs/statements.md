@@ -142,7 +142,7 @@ which then allows you to simplify the triple call to `where` in a query to the f
 Instead of a `CompositeWhereClause` you can also use a `NamedParameterList`:
 
     protected NamedParameterList hasLocale (Locale locale) {
-        return new NamedParameterList()
+        return namedParameterList()
             .with ("language", locale.getLanguage())
             .with ("country", locale.getCountry())
             .with ("variant", locale.getVariant());

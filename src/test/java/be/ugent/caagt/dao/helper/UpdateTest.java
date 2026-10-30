@@ -225,7 +225,7 @@ public class UpdateTest extends TestDAO {
     public void updateWithMultiSet() {
         update("persons")
                 .set("first_name", "Jane")
-                .set(new NamedParameterList()
+                .set(namedParameterList()
                         .with("number", 17)
                         .with("flag", false))
                 .where("id", key).execute();

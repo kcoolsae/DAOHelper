@@ -20,12 +20,23 @@ public class NamedParameterList extends StatementModifier {
 
     private List<NamedParameter> parameters;
 
+    private final EnumClassNameTranslator enumClassNameTranslator;
+
+    public NamedParameterList(EnumClassNameTranslator enumClassNameTranslator) {
+        this.enumClassNameTranslator = enumClassNameTranslator;
+        this.parameters = new ArrayList<>();
+    }
+
+    /**
+     * @deprecated Use method {@code namedParameterList} from DAO or DAC instead
+     */
+    @Deprecated
     public NamedParameterList() {
-        parameters = new ArrayList<>();
+        this (EnumClassNameTranslator.SNAKE_CASE);
     }
 
     public NamedParameterList with(NamedParameter name) {
-        NamedParameterList result = new NamedParameterList();
+        NamedParameterList result = new NamedParameterList(enumClassNameTranslator);
         result.parameters = new ArrayList<>(parameters);
         result.parameters.add(name);
         return result;
@@ -93,6 +104,54 @@ public class NamedParameterList extends StatementModifier {
 
     public NamedParameterList with(String name, byte[] parameter) {
         return with(name, new BytesParameter(parameter));
+    }
+
+    public NamedParameterList with(String name, String[] parameter) {
+        return with(name, new SqlArrayParameter(parameter, "TEXT"));
+    }
+
+    public NamedParameterList with(String name, String[][] parameter) {
+        return with(name, new SqlArrayParameter(parameter, "TEXT"));
+    }
+
+    public NamedParameterList with(String name, Integer[] parameter) {
+        return with(name, new SqlArrayParameter(parameter, "INTEGER"));
+    }
+
+    public NamedParameterList with(String name, Integer[][] parameter) {
+        return with(name, new SqlArrayParameter(parameter, "INTEGER"));
+    }
+
+    public NamedParameterList with(String name, Double[] parameter) {
+        return with(name, new SqlArrayParameter(parameter, "float8"));
+    }
+
+    public NamedParameterList with(String name, Double[][] parameter) {
+        return with(name, new SqlArrayParameter(parameter, "float8"));
+    }
+
+    public NamedParameterList with(String name, int[] parameter) {
+        return with(name, new IntArrayParameter(parameter));
+    }
+
+    public NamedParameterList with(String name, int[][] parameter) {
+        return with(name, new Int2DimArrayParameter(parameter));
+    }
+
+    public NamedParameterList with(String name, double[] parameter) {
+        return with(name, new DoubleArrayParameter(parameter));
+    }
+
+    public NamedParameterList with(String name, double[][] parameter) {
+        return with(name, new Double2DimArrayParameter(parameter));
+    }
+
+    public NamedParameterList with(String name, Object[] parameter, String typeName) {
+        return with(name, new SqlArrayParameter(parameter, typeName));
+    }
+
+    public <E extends Enum<E>> NamedParameterList with(String name, E parameter) {
+        return with(name, new EnumParameter<>(parameter, enumClassNameTranslator));
     }
 
 }

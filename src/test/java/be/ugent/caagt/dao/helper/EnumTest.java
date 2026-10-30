@@ -135,4 +135,29 @@ public class EnumTest extends TestDAO {
         ).isEqualTo("?::shape");
     }
 
+    @Test
+    public void withNamedParameterList() {
+        assertThat(
+                select("id").from("colors")
+                        .where(namedParameterList().with("color", Color.BLUE))
+                        .getInt()
+        ).isEqualTo(13);
+        insertOrUpdateInto("colorNames")
+                .key(namedParameterList().with("color", Color.GREEN))
+                .value("name", "Greenish")
+                .execute();
+        assertThat(
+                select("name").from("colorNames").where("color", Color.GREEN).getString()
+        ).isEqualTo("Greenish");
+    }
+
+    @Test
+    public void having() {
+        assertThat(
+                select("count(*)").from("colors")
+                        .groupBy("color")
+                        .having("color", Color.BLUE)
+                        .getInt()
+        ).isEqualTo(1);
+    }
 }

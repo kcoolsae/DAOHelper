@@ -49,6 +49,10 @@ public class UpsertHeader extends InsertOrUpsert<UpsertSQLStatement> {
         return result;
     }
 
+    public UpsertHeader key(String name, Parameter value) {
+        return copyAndAdd(name, value);
+    }
+
     public UpsertHeader key(String name, boolean value) {
         return copyAndAdd(name, new BooleanParameter(value));
     }
@@ -83,6 +87,50 @@ public class UpsertHeader extends InsertOrUpsert<UpsertSQLStatement> {
 
     public UpsertHeader key(String name, byte[] value) {
         return copyAndAdd(name, new BytesParameter(value));
+    }
+
+    public UpsertHeader key(String name, String[] value) {
+        return copyAndAdd(name, new SqlArrayParameter(value, "TEXT"));
+    }
+
+    public UpsertHeader key(String name, String[][] value) {
+        return copyAndAdd(name, new SqlArrayParameter(value, "TEXT"));
+    }
+
+    public UpsertHeader key(String name, Integer[] value) {
+        return copyAndAdd(name, new SqlArrayParameter(value, "INTEGER"));
+    }
+
+    public UpsertHeader key(String name, Integer[][] value) {
+        return copyAndAdd(name, new SqlArrayParameter(value, "INTEGER"));
+    }
+
+    public UpsertHeader key(String name, Double[] value) {
+        return copyAndAdd(name, new SqlArrayParameter(value, "float8"));
+    }
+
+    public UpsertHeader key(String name, Double[][] value) {
+        return copyAndAdd(name, new SqlArrayParameter(value, "float8"));
+    }
+
+    public UpsertHeader key(String name, int[] value) {
+        return copyAndAdd(name, new IntArrayParameter(value));
+    }
+
+    public UpsertHeader key(String name, int[][] value) {
+        return copyAndAdd(name, new Int2DimArrayParameter(value));
+    }
+
+    public UpsertHeader key(String name, double[] value) {
+        return copyAndAdd(name, new DoubleArrayParameter(value));
+    }
+
+    public UpsertHeader key(String name, double[][] value) {
+        return copyAndAdd(name, new Double2DimArrayParameter(value));
+    }
+
+    public UpsertHeader key(String name, Object[] value, String typeName) {
+        return copyAndAdd(name, new SqlArrayParameter(value, typeName));
     }
 
     public <E extends Enum<E>> UpsertHeader key(String name, E value) {

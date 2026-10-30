@@ -77,7 +77,7 @@ public class BytesTest extends TestDAO {
     public void parameterList() {
         assertThat(
                 select("id").from("byteTable").where(
-                        new NamedParameterList().with("code", CODE)
+                        namedParameterList().with("code", CODE)
                 ).getInt()
         ).isEqualTo(1);
     }

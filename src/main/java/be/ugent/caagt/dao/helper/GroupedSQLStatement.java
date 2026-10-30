@@ -98,4 +98,52 @@ public class GroupedSQLStatement extends AbstractOrderedStatement {
         return having(new WhereClause(clause, new BytesParameter(parameter)));
     }
 
+    public GroupedSQLStatement having(String clause, String[] parameter) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, "TEXT")));
+    }
+
+    public GroupedSQLStatement having(String clause, String[][] parameter) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, "TEXT")));
+    }
+
+    public GroupedSQLStatement having(String clause, Integer[] parameter) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, "INTEGER")));
+    }
+
+    public GroupedSQLStatement having(String clause, Integer[][] parameter) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, "INTEGER")));
+    }
+
+    public GroupedSQLStatement having(String clause, Double[] parameter) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, "float8")));
+    }
+
+    public GroupedSQLStatement having(String clause, Double[][] parameter) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, "float8")));
+    }
+
+    public GroupedSQLStatement having(String clause, int[] parameter) {
+        return having(new WhereClause(clause, new IntArrayParameter(parameter)));
+    }
+
+    public GroupedSQLStatement having(String clause, int[][] parameter) {
+        return having(new WhereClause(clause, new Int2DimArrayParameter(parameter)));
+    }
+
+    public GroupedSQLStatement having(String clause, double[] parameter) {
+        return having(new WhereClause(clause, new DoubleArrayParameter(parameter)));
+    }
+
+    public GroupedSQLStatement having(String clause, double[][] parameter) {
+        return having(new WhereClause(clause, new Double2DimArrayParameter(parameter)));
+    }
+
+    public GroupedSQLStatement having(String clause, Object[] parameter, String typeName) {
+        return having(new WhereClause(clause, new SqlArrayParameter(parameter, typeName)));
+    }
+
+    public <E extends Enum<E>> GroupedSQLStatement having(String clause, E parameter) {
+        return having(new WhereClause(clause, parameter, context.getEnumClassTranslator()));
+    }
+
 }

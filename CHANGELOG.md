@@ -18,6 +18,10 @@ Changes
 * Updates can take values from other tables with `from` (PostgreSQL `UPDATE … FROM`).
   See [Delete / update](docs/statements.md#delete--update).
 * An update without `where` can now be executed (and then applies to all records)
+* `key` (upserts), `having` and `with` (named parameter lists) now support arrays, and `having` and `with`
+  also support enumerated types. `key` also accepts a `Parameter` object, like `value`.
+* Named parameter lists should now be created with `namedParameterList()` in the DAO or DAC, so that
+  enumerated types are translated as configured. The constructor `new NamedParameterList()` is deprecated.
 * Documentation brought up to date with the features added since version 1.1.6, and split
   into several files
 
