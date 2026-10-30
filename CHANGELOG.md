@@ -10,6 +10,8 @@ Changes
   and the other finders threw a `NullPointerException`.
   See [Finders](docs/queries.md#finders).
 * `set` now supports `String[][]`
+* Updates can take values from other tables with `from` (PostgreSQL `UPDATE … FROM`).
+  See [Delete / update](docs/statements.md#delete--update).
 * Documentation brought up to date with the features added since version 1.1.6, and split
   into several files
 

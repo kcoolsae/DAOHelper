@@ -233,4 +233,48 @@ public class UpdateTest extends TestDAO {
         checkNumberBecame17();
         checkFlagBecameFalse();
     }
+
+    @Test
+    public void updateFrom() {
+        insertInto("details").value("id", key).value("nr", 17).execute();
+        update("persons AS p")
+                .set("number = d.nr")
+                .set("first_name", "Jane")
+                .from("details AS d")
+                .where("d.id = p.id")
+                .where("p.id", key)
+                .execute();
+        checkJohnBecameJane();
+        checkNumberBecame17();
+    }
+
+    @Test
+    public void updateFromWithParameter() {
+        insertInto("details").value("id", key).value("nr", 17).execute();
+        insertInto("details").value("id", key).value("nr", 30).execute();
+        update("persons")
+                .set("first_name", "Jane")
+                .set("number = d.nr")
+                .from("(SELECT id, max(nr) AS nr FROM details WHERE nr < ? GROUP BY id) AS d")
+                .parameter(20)
+                .where("d.id = persons.id")
+                .where("persons.id", key)
+                .execute();
+        checkJohnBecameJane();
+        checkNumberBecame17();
+    }
+
+    @Test
+    public void updateFromWithModifier() {
+        insertInto("details").value("id", key).value("nr", 17).execute();
+        update("persons")
+                .set("number = details.nr")
+                .from("details")
+                .where(compositeWhereClause()
+                        .where("details.id = persons.id")
+                        .where("persons.id", key))
+                .where("flag", true)
+                .execute();
+        checkNumberBecame17();
+    }
 }

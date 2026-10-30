@@ -14,7 +14,7 @@ package be.ugent.caagt.dao.helper;
  */
 public class UpdateOrDeleteSQLStatement extends AbstractFilteredStatement implements SupportsWhere<UpdateOrDeleteSQLStatement> {
 
-    UpdateOrDeleteSQLStatement(UpdateSQLStatement src) {
+    UpdateOrDeleteSQLStatement(AbstractSQLStatement src) {
         copyAux(src);
     }
 

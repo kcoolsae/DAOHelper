@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Fist part of an update statement. Supports 'set' and 'where'
+ * First part of an update statement. Supports 'set', 'from' and 'where'
  */
 public class UpdateSQLStatement extends AbstractSQLStatement implements SupportsWhere<UpdateOrDeleteSQLStatement> {
 
@@ -152,6 +152,15 @@ public class UpdateSQLStatement extends AbstractSQLStatement implements Supports
 
     public <E extends Enum<E>> UpdateSQLStatement set(String name, E parameter) {
         return set(name, new EnumParameter<>(parameter, context.getEnumClassTranslator()));
+    }
+
+    /**
+     * Adds a from clause, which lists the other tables that can be used in the set and where clauses.
+     * The clause can contain question marks, which must be filled in with
+     * {@link UpdateFromSQLStatement#parameter} before the first where clause.
+     */
+    public UpdateFromSQLStatement from(String clause) {
+        return new UpdateFromSQLStatement(this, clause);
     }
 
     @Override

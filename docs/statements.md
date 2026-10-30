@@ -70,6 +70,18 @@ or can contain question marks in more complicated cases
     update("myTable")
         .set("count = count + ?", someIncrement)
         .where("category", someCategory).execute();
+
+Use `from` to take values from other tables (PostgreSQL `UPDATE … FROM`). The `from` must come after
+all `set` clauses and before the `where` clauses, which also link the tables
+
+    update("questions AS q")
+        .set("marks = m.marks")
+        .set("changed_by", someUser)
+        .from("marks AS m")
+        .where("m.name = q.marks_name")
+        .where("q.id", someId).execute();
+
+When the `from` clause contains question marks, fill them in with `parameter`, right after the `from`.
                 
 Where
 ---
