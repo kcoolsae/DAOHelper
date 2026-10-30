@@ -17,6 +17,7 @@ Changes
 * `set` now supports `String[][]`
 * Updates can take values from other tables with `from` (PostgreSQL `UPDATE … FROM`).
   See [Delete / update](docs/statements.md#delete--update).
+* An update without `where` can now be executed (and then applies to all records)
 * Documentation brought up to date with the features added since version 1.1.6, and split
   into several files
 

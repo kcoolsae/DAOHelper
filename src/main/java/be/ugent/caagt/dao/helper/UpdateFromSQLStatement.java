@@ -11,7 +11,7 @@ package be.ugent.caagt.dao.helper;
 
 /**
  * Part of an update statement up to and including the from clause. Supports 'parameter' (for question marks
- * in the from clause) and 'where', but no further 'set'.
+ * in the from clause) and 'where', but no further 'set'. Cannot be executed without where clause.
  */
 public class UpdateFromSQLStatement extends AbstractSQLStatement
         implements SupportsParameter<UpdateFromSQLStatement>, SupportsWhere<UpdateOrDeleteSQLStatement> {

@@ -176,4 +176,11 @@ public class UpdateSQLStatement extends AbstractSQLStatement implements Supports
     public <E extends Enum<E>> UpdateOrDeleteSQLStatement where(String clause, E parameter) {
         return where(new WhereClause(clause, parameter, context.getEnumClassTranslator()));
     }
+
+    /**
+     * Execute the update without where clause, i.e., for all records of the table.
+     */
+    public void execute() {
+        executeUpdate();
+    }
 }

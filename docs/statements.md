@@ -71,6 +71,11 @@ or can contain question marks in more complicated cases
         .set("count = count + ?", someIncrement)
         .where("category", someCategory).execute();
 
+Without `where`, the update applies to all records of the table
+
+    update("users")
+        .set("loggedIn", false).execute();
+
 Use `from` to take values from other tables (PostgreSQL `UPDATE … FROM`). The `from` must come after
 all `set` clauses and before the `where` clauses, which also link the tables
 
@@ -82,6 +87,7 @@ all `set` clauses and before the `where` clauses, which also link the tables
         .where("q.id", someId).execute();
 
 When the `from` clause contains question marks, fill them in with `parameter`, right after the `from`.
+An update with `from` must have at least one `where` clause.
                 
 Where
 ---

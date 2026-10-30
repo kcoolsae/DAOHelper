@@ -235,6 +235,15 @@ public class UpdateTest extends TestDAO {
     }
 
     @Test
+    public void updateWithoutWhere() {
+        insertInto("persons").value("name", "Roe").value("first_name", "Richard").execute();
+        update("persons").set("first_name", "Jane").execute();
+        assertThat(
+                select("count(*)").from("persons").where("first_name <> 'Jane'").getInt()
+        ).isEqualTo(0);
+    }
+
+    @Test
     public void updateFrom() {
         insertInto("details").value("id", key).value("nr", 17).execute();
         update("persons AS p")
