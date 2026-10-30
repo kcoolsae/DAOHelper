@@ -162,8 +162,17 @@ standard convention for PostgreSQL).
        
     int posNum = select("GREATEST(0,?)").parameter(someNum).noFrom().getInt();
      
-The `noFrom` indicates that the `select` is not related to a specific table. (In future versions
-we want to provide a `call` syntax for this type of queries.)
+The `noFrom` indicates that the `select` is not related to a specific table. It must be written
+explicitly, so that a forgotten `from` does not go unnoticed. The same construction is useful for other 
+expressions that do not need a table, for example
+
+    int next = select("nextval('mySequence')").noFrom().getOneInt();
+
+    boolean hasDebt = select("EXISTS (SELECT 1 FROM invoices WHERE userId = ? AND NOT paid)")
+        .parameter(someUserId).noFrom().getOneBoolean();
+
+    List<Integer> numbers = select("generate_series(1, ?)").parameter(someCount).noFrom()
+        .getList(rs -> rs.getInt(1));
 
 Low level calls
 ---

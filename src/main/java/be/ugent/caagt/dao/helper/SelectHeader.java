@@ -27,7 +27,9 @@ public class SelectHeader extends AbstractSQLStatement implements SupportsParame
     }
 
     /**
-     * Perform a select without from-clause. Use this to call functions stored in the database.
+     * Perform a select without from-clause. Use this to call functions stored in the database, or
+     * for other expressions that do not need a table, such as {@code nextval('mySequence')} or
+     * {@code EXISTS (SELECT ...)}.
      */
     public RestrictedSelectSQLStatement noFrom() {
         return new RestrictedSelectSQLStatement(this);

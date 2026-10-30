@@ -38,4 +38,20 @@ public class CallTest extends TestDAO {
                 select("GREATEST(2,?)").parameter(15).noFrom().getInt()
         ).isEqualTo(15);
     }
+
+    @Test
+    public void existsWithoutFrom() {
+        insertInto("persons").value("name", "Doe").value("flag", false).execute();
+        assertThat(
+                select("EXISTS (SELECT 1 FROM persons WHERE name = ? AND NOT flag)")
+                        .parameter("Doe").noFrom().getOneBoolean()
+        ).isTrue();
+    }
+
+    @Test
+    public void setReturningFunctionWithoutFrom() {
+        assertThat(
+                select("generate_series(1, ?)").parameter(3).noFrom().getList(rs -> rs.getInt(1))
+        ).containsExactly(1, 2, 3);
+    }
 }
