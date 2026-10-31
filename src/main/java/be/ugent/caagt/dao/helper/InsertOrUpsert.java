@@ -116,7 +116,7 @@ abstract class InsertOrUpsert<T extends InsertOrUpsert<T>> {
     }
 
     public <E extends Enum<E>> T value (String name, E value) {
-        return value (name, new EnumParameter<>(value, context.getEnumClassTranslator()));
+        return value (name, new EnumParameter<>(value));
     }
 
     protected String getFullStatement() {

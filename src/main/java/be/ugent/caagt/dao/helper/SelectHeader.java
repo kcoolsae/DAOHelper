@@ -43,9 +43,4 @@ public class SelectHeader extends AbstractSQLStatement implements SupportsParame
         return result;
     }
 
-    @Override
-    public <E extends Enum<E>> SelectHeader parameter(E value) {
-        return parameter(new EnumParameter<>(value, context.getEnumClassTranslator()));
-    }
-
 }

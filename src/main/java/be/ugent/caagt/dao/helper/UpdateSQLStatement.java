@@ -151,7 +151,7 @@ public class UpdateSQLStatement extends AbstractSQLStatement implements Supports
     }
 
     public <E extends Enum<E>> UpdateSQLStatement set(String name, E parameter) {
-        return set(name, new EnumParameter<>(parameter, context.getEnumClassTranslator()));
+        return set(name, new EnumParameter<>(parameter));
     }
 
     /**
@@ -170,11 +170,6 @@ public class UpdateSQLStatement extends AbstractSQLStatement implements Supports
 
     public UpdateOrDeleteSQLStatement where(StatementModifier modifier) {
         return new UpdateOrDeleteSQLStatement(this).where(modifier);
-    }
-
-    @Override
-    public <E extends Enum<E>> UpdateOrDeleteSQLStatement where(String clause, E parameter) {
-        return where(new WhereClause(clause, parameter, context.getEnumClassTranslator()));
     }
 
     /**

@@ -16,24 +16,21 @@ public class CompositeWhereClause extends StatementModifier implements SupportsW
 
     private List<WhereClause> clauses;
 
-    private final EnumClassNameTranslator enumClassNameTranslator;
-
-    public CompositeWhereClause(EnumClassNameTranslator enumClassNameTranslator) {
-        this.enumClassNameTranslator = enumClassNameTranslator;
+    public CompositeWhereClause() {
         this.clauses = new ArrayList<>();
     }
 
     /**
-     * @deprecated Use method {@code compositeWhereClause} from DAO or DAC instead
+     * @deprecated The translator is no longer used. Use {@link #CompositeWhereClause()} instead
      */
     @Deprecated
-    public CompositeWhereClause() {
-        this (EnumClassNameTranslator.SNAKE_CASE);
+    public CompositeWhereClause(EnumClassNameTranslator enumClassNameTranslator) {
+        this();
     }
 
     @Override
     public CompositeWhereClause where(WhereClause clause) {
-        CompositeWhereClause result = new CompositeWhereClause(enumClassNameTranslator);
+        CompositeWhereClause result = new CompositeWhereClause();
         result.clauses = new ArrayList<>(clauses);
         result.clauses.add(clause);
         return result;
@@ -51,10 +48,5 @@ public class CompositeWhereClause extends StatementModifier implements SupportsW
         for (WhereClause clause : clauses) {
             statement.addAuxHaving(clause);
         }
-    }
-
-    @Override
-    public <E extends Enum<E>> CompositeWhereClause where(String clause, E parameter) {
-        return where(new WhereClause(clause, parameter, enumClassNameTranslator));
     }
 }

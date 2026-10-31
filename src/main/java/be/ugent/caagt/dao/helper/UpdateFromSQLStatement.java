@@ -37,21 +37,11 @@ public class UpdateFromSQLStatement extends AbstractSQLStatement
     }
 
     @Override
-    public <E extends Enum<E>> UpdateFromSQLStatement parameter(E value) {
-        return parameter(new EnumParameter<>(value, context.getEnumClassTranslator()));
-    }
-
-    @Override
     public UpdateOrDeleteSQLStatement where(WhereClause clause) {
         return new UpdateOrDeleteSQLStatement(this).where(clause);
     }
 
     public UpdateOrDeleteSQLStatement where(StatementModifier modifier) {
         return new UpdateOrDeleteSQLStatement(this).where(modifier);
-    }
-
-    @Override
-    public <E extends Enum<E>> UpdateOrDeleteSQLStatement where(String clause, E parameter) {
-        return where(new WhereClause(clause, parameter, context.getEnumClassTranslator()));
     }
 }

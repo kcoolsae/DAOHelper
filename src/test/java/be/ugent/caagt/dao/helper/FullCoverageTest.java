@@ -50,7 +50,7 @@ public class FullCoverageTest extends TestDAO {
     public void insertWithParameterList() {
         LocalDateTime dateTime = LocalDateTime.of(2014, 4, 1, 12, 0);
         Instant instant = Instant.ofEpochSecond(120000);
-        NamedParameterList list = namedParameterList()
+        NamedParameterList list = new NamedParameterList()
                 .with("first_name", "John")
                 .with("number", 13)
                 .with("registered", dateTime)
@@ -96,7 +96,7 @@ public class FullCoverageTest extends TestDAO {
 
     @Test(expected = IllegalArgumentException.class)
     public void namedParameterShouldBeSimple() {
-        namedParameterList()
+        new NamedParameterList()
                 .with("number > ?", 12);
     }
 

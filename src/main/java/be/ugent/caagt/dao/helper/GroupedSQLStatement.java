@@ -143,7 +143,7 @@ public class GroupedSQLStatement extends AbstractOrderedStatement {
     }
 
     public <E extends Enum<E>> GroupedSQLStatement having(String clause, E parameter) {
-        return having(new WhereClause(clause, parameter, context.getEnumClassTranslator()));
+        return having(new WhereClause(clause, parameter));
     }
 
 }

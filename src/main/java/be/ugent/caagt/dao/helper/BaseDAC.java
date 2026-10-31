@@ -85,7 +85,9 @@ public abstract class BaseDAC implements AutoCloseable {
     /**
      * Provides translation of java enum class names to database enum types.
      * Default implementation converts to snake case, but can be overridden by clients.
+     * @deprecated No longer used: enumerated database types are now inferred from the context
      */
+    @Deprecated
     protected EnumClassNameTranslator getEnumClassTranslator () {
         return EnumClassNameTranslator.SNAKE_CASE;
     }
@@ -94,14 +96,7 @@ public abstract class BaseDAC implements AutoCloseable {
      * Create a composite where clause
      */
     protected CompositeWhereClause compositeWhereClause() {
-        return new CompositeWhereClause(getEnumClassTranslator());
-    }
-
-    /**
-     * Create an empty list of named parameters
-     */
-    protected NamedParameterList namedParameterList() {
-        return new NamedParameterList(getEnumClassTranslator());
+        return new CompositeWhereClause();
     }
 
 }

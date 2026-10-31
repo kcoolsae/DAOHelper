@@ -18,7 +18,9 @@ Changes
   sent without a type and PostgreSQL infers the enumerated type from the context. As a consequence,
   enum parameters now also work with question marks in your own SQL (for example `where("color = ?", Color.RED)`
   or `sql(...).parameter(Color.RED)`), the names of the Java and database types no longer need to correspond,
-  and the translation of type names (`getEnumClassTranslator`) is no longer used.
+  and the translation of type names is no longer needed. `EnumClassNameTranslator`,
+  `getEnumClassTranslator` and the constructors that take a translator are deprecated, and the
+  constructor `new CompositeWhereClause()` is no longer deprecated.
   The name of the constant is now taken from `name()` instead of `toString()`.
   See [Enumerated types](docs/data-types.md#enumerated-types).
 * `set` now supports `String[][]`
@@ -27,8 +29,6 @@ Changes
 * An update without `where` can now be executed (and then applies to all records)
 * `key` (upserts), `having` and `with` (named parameter lists) now support arrays, and `having` and `with`
   also support enumerated types. `key` also accepts a `Parameter` object, like `value`.
-* Named parameter lists should now be created with `namedParameterList()` in the DAO or DAC, so that
-  enumerated types are translated as configured. The constructor `new NamedParameterList()` is deprecated.
 * Documentation brought up to date with the features added since version 1.1.6, and split
   into several files
 

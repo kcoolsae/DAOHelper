@@ -37,11 +37,6 @@ public class SQLProcedureCall extends AbstractSQLStatement implements SupportsPa
         return result;
     }
 
-    @Override
-    public <E extends Enum<E>> SQLProcedureCall parameter(E value) {
-        return parameter(new EnumParameter<>(value, context.getEnumClassTranslator()));
-    }
-
     /**
      * Execute the call
      */

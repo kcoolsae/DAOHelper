@@ -76,14 +76,4 @@ public class SelectSQLStatement extends AbstractOrderedStatement
             throw BaseDAO.convert(ex);
         }
     }
-
-    @Override
-    public <E extends Enum<E>> SelectSQLStatement parameter(E value) {
-        return parameter (new EnumParameter<>(value, context.getEnumClassTranslator()));
-    }
-
-    @Override
-    public <E extends Enum<E>> SelectSQLStatement where(String clause, E parameter) {
-        return where(new WhereClause(clause, parameter, context.getEnumClassTranslator()));
-    }
 }

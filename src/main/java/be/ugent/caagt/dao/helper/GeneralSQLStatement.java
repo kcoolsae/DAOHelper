@@ -35,10 +35,4 @@ public class GeneralSQLStatement extends AbstractSQLStatement implements Support
     public void execute() {
         executeUpdate();
     }
-
-
-    @Override
-    public <E extends Enum<E>> GeneralSQLStatement parameter(E value) {
-        return parameter(new EnumParameter<>(value, context.getEnumClassTranslator()));
-    }
 }

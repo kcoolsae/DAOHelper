@@ -20,23 +20,12 @@ public class NamedParameterList extends StatementModifier {
 
     private List<NamedParameter> parameters;
 
-    private final EnumClassNameTranslator enumClassNameTranslator;
-
-    public NamedParameterList(EnumClassNameTranslator enumClassNameTranslator) {
-        this.enumClassNameTranslator = enumClassNameTranslator;
-        this.parameters = new ArrayList<>();
-    }
-
-    /**
-     * @deprecated Use method {@code namedParameterList} from DAO or DAC instead
-     */
-    @Deprecated
     public NamedParameterList() {
-        this (EnumClassNameTranslator.SNAKE_CASE);
+        parameters = new ArrayList<>();
     }
 
     public NamedParameterList with(NamedParameter name) {
-        NamedParameterList result = new NamedParameterList(enumClassNameTranslator);
+        NamedParameterList result = new NamedParameterList();
         result.parameters = new ArrayList<>(parameters);
         result.parameters.add(name);
         return result;
@@ -151,7 +140,7 @@ public class NamedParameterList extends StatementModifier {
     }
 
     public <E extends Enum<E>> NamedParameterList with(String name, E parameter) {
-        return with(name, new EnumParameter<>(parameter, enumClassNameTranslator));
+        return with(name, new EnumParameter<>(parameter));
     }
 
 }

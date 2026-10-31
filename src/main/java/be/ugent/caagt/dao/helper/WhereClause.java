@@ -80,8 +80,16 @@ public class WhereClause extends StatementModifier {
         this (clause, new InstantParameter(parameter));
     }
 
+    public <E extends Enum<E>> WhereClause (String clause, E parameter) {
+        this (clause, new EnumParameter<>(parameter));
+    }
+
+    /**
+     * @deprecated The translator is no longer used. Use {@link #WhereClause(String, Enum)} instead
+     */
+    @Deprecated
     public <E extends Enum<E>> WhereClause (String clause, E parameter, EnumClassNameTranslator translator) {
-        this (clause, new EnumParameter<>(parameter, translator));
+        this (clause, parameter);
     }
 
     String getClause() {

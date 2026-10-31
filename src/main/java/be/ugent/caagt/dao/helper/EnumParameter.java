@@ -22,11 +22,17 @@ public class EnumParameter<E extends Enum<E>> implements Parameter {
 
     private final E par;
 
-    /**
-     * @param enumClassNameTranslator no longer used, the database type is inferred from the context
-     */
-    public EnumParameter(E par, EnumClassNameTranslator enumClassNameTranslator) {
+    public EnumParameter(E par) {
         this.par = par;
+    }
+
+    /**
+     * @deprecated The database type is now inferred from the context and the translator is no longer used.
+     * Use {@link #EnumParameter(Enum)} instead
+     */
+    @Deprecated
+    public EnumParameter(E par, EnumClassNameTranslator enumClassNameTranslator) {
+        this(par);
     }
 
     @Override

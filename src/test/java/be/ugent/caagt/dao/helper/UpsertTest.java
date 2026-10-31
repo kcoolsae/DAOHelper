@@ -70,7 +70,7 @@ public class UpsertTest extends TestDAO {
     }
 
     private NamedParameterList val1val2(String val1, int val2) {
-        return namedParameterList()
+        return new NamedParameterList()
                 .with("val1", val1)
                 .with("val2", val2);
     }
@@ -87,7 +87,7 @@ public class UpsertTest extends TestDAO {
     @Test
     public void upsertKeyParameterList() {
         insertOrUpdateInto("stuff")
-                .key(namedParameterList().with("id", 123))
+                .key(new NamedParameterList().with("id", 123))
                 .value("val1", "gerard").value("val2", 15)
                 .execute();
         assertUpsertGerard15();

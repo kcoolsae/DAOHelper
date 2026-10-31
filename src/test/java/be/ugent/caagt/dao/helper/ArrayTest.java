@@ -215,13 +215,13 @@ public class ArrayTest extends TestDAO {
     public void namedParameterListWithArray() {
         double[] doubles = {7.0, 8.0};
         insertInto("arrayTable")
-                .value(namedParameterList()
+                .value(new NamedParameterList()
                         .with("id", 10)
                         .with("doubles", doubles))
                 .execute();
         assertThat(
                 select("id").from("arrayTable")
-                        .where(namedParameterList().with("doubles", doubles))
+                        .where(new NamedParameterList().with("doubles", doubles))
                         .getInt()
         ).isEqualTo(10);
     }

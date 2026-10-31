@@ -9,6 +9,11 @@
 
 package be.ugent.caagt.dao.helper;
 
+/**
+ * @deprecated Enumerated database types are now inferred from the context, so the names of Java classes no
+ * longer need to be translated
+ */
+@Deprecated
 public interface EnumClassNameTranslator {
 
     /**

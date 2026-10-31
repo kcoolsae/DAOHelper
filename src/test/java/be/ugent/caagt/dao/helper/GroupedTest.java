@@ -145,7 +145,7 @@ public class GroupedTest extends TestDAO {
                 select("count(id)").from("persons")
                         .groupBy("name, number")
                         .having(
-                                namedParameterList()
+                                new NamedParameterList()
                                         .with("name", "Bond0")
                                         .with("number", 9)
                         )

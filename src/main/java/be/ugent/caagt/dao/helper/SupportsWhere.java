@@ -108,5 +108,7 @@ public interface SupportsWhere<T> {
         return where(new WhereClause(clause, new SqlArrayParameter(parameter, typeName)));
     }
 
-    <E extends Enum<E>> T where(String clause, E parameter);
+    default <E extends Enum<E>> T where(String clause, E parameter) {
+        return where(new WhereClause(clause, parameter));
+    }
 }

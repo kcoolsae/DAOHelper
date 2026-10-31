@@ -75,7 +75,7 @@ public class DoubleTest extends TestDAO {
     public void insertSpecialValues2() {
         insertInto("coordinates")
                 .value("x", 5.0)
-                .value(namedParameterList()
+                .value(new NamedParameterList()
                         .with("y", Double.NaN)
                         .with( "z", -0.0)
                 ).execute();

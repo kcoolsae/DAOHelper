@@ -133,13 +133,13 @@ public class EnumTest extends TestDAO {
     public void plainQuestionMark() {
         // same SQL for null and non-null values, and for constants with a body
         assertThat(
-                new EnumParameter<>(Color.RED, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+                new EnumParameter<>(Color.RED).getQuestionMark()
         ).isEqualTo("?");
         assertThat(
-                new EnumParameter<>((Color) null, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+                new EnumParameter<>((Color) null).getQuestionMark()
         ).isEqualTo("?");
         assertThat(
-                new EnumParameter<>(Shape.CIRCLE, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+                new EnumParameter<>(Shape.CIRCLE).getQuestionMark()
         ).isEqualTo("?");
     }
 
@@ -241,11 +241,11 @@ public class EnumTest extends TestDAO {
     public void withNamedParameterList() {
         assertThat(
                 select("id").from("colors")
-                        .where(namedParameterList().with("color", Color.BLUE))
+                        .where(new NamedParameterList().with("color", Color.BLUE))
                         .getInt()
         ).isEqualTo(13);
         insertOrUpdateInto("colorNames")
-                .key(namedParameterList().with("color", Color.GREEN))
+                .key(new NamedParameterList().with("color", Color.GREEN))
                 .value("name", "Greenish")
                 .execute();
         assertThat(
@@ -261,5 +261,19 @@ public class EnumTest extends TestDAO {
                         .having("color", Color.BLUE)
                         .getInt()
         ).isEqualTo(1);
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void deprecatedTranslatorStillAccepted() {
+        assertThat(
+                select("id").from("colors")
+                        .where(new CompositeWhereClause(EnumClassNameTranslator.NO_OP).where("color", Color.BLUE))
+                        .where(new WhereClause("color = ?", Color.BLUE, EnumClassNameTranslator.SNAKE_CASE))
+                        .getInt()
+        ).isEqualTo(13);
+        assertThat(
+                new EnumParameter<>(Color.RED, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+        ).isEqualTo("?");
     }
 }

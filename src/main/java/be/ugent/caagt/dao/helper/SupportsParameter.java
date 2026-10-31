@@ -101,6 +101,8 @@ public interface SupportsParameter<T extends AbstractSQLStatement> {
         return parameter(new SqlArrayParameter(value, typeName));
     }
 
-    <E extends Enum<E>> T parameter (E value);
+    default <E extends Enum<E>> T parameter (E value) {
+        return parameter(new EnumParameter<>(value));
+    }
 
 }

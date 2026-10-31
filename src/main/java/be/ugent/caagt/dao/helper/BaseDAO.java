@@ -226,11 +226,4 @@ public abstract class BaseDAO {
         return context.compositeWhereClause();
     }
 
-    /**
-     * Create an empty list of named parameters
-     */
-    protected NamedParameterList namedParameterList() {
-        return context.namedParameterList();
-    }
-
 }

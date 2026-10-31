@@ -9,6 +9,7 @@
 
 package be.ugent.caagt.dao.helper;
 
+@Deprecated
 class SnakeCase implements EnumClassNameTranslator {
     @Override
     public String translate(String className) {

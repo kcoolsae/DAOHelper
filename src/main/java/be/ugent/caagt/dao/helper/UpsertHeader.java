@@ -134,7 +134,7 @@ public class UpsertHeader extends InsertOrUpsert<UpsertSQLStatement> {
     }
 
     public <E extends Enum<E>> UpsertHeader key(String name, E value) {
-        return copyAndAdd(name, new EnumParameter<>(value, context.getEnumClassTranslator()));
+        return copyAndAdd(name, new EnumParameter<>(value));
     }
 
     protected String getFullStatement() {

@@ -45,7 +45,7 @@ public class InsertTest extends TestDAO {
         LocalDateTime dateTime = LocalDateTime.of(2012, 8, 2, 11, 0);
         Instant instant = Instant.ofEpochSecond(150000);
 
-        NamedParameterList list = namedParameterList()
+        NamedParameterList list = new NamedParameterList()
                 .with("name", "Doe")
                 .with("first_name", "John")
                 .with("number", 13)

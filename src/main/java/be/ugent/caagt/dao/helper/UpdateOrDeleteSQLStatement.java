@@ -41,11 +41,6 @@ public class UpdateOrDeleteSQLStatement extends AbstractFilteredStatement implem
         return result;
     }
 
-    @Override
-    public <E extends Enum<E>> UpdateOrDeleteSQLStatement where(String clause, E parameter) {
-        return where (new WhereClause(clause, parameter, context.getEnumClassTranslator()));
-    }
-
     public void execute() {
         executeUpdate();
     }
