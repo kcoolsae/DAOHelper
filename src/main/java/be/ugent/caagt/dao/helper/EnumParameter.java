@@ -13,36 +13,28 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
+/**
+ * Parameter of an enumerated type. The name of the enum constant is sent without a type, so that the
+ * database infers the enumerated type from the context, for example from the column it is compared with
+ * or assigned to. A plain question mark is used, both for null and for non-null values.
+ */
 public class EnumParameter<E extends Enum<E>> implements Parameter {
 
     private final E par;
 
-    private final EnumClassNameTranslator enumClassTranslator;
-
+    /**
+     * @param enumClassNameTranslator no longer used, the database type is inferred from the context
+     */
     public EnumParameter(E par, EnumClassNameTranslator enumClassNameTranslator) {
         this.par = par;
-        this.enumClassTranslator = enumClassNameTranslator;
     }
 
     @Override
     public void setParameter(PreparedStatement ps, int index) throws SQLException {
         if (par == null) {
-            ps.setNull(index, Types.OTHER); // database type is inferred from the context
+            ps.setNull(index, Types.OTHER);
         } else {
-            ps.setString(index, par.toString());
-        }
-    }
-
-    /**
-     * Returns a question mark with a cast to the corresponding database type. For a null value the
-     * enum class is unknown and then a plain question mark is returned.
-     */
-    @Override
-    public String getQuestionMark() {
-        if (par == null) {
-            return "?";
-        } else {
-            return "?::" + enumClassTranslator.translate(par.getDeclaringClass().getSimpleName());
+            ps.setObject(index, par.name(), Types.OTHER);
         }
     }
 }

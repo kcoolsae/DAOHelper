@@ -9,6 +9,7 @@
 
 package be.ugent.caagt.dao.helper;
 
+import be.ugent.caagt.dao.DataAccessException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -123,16 +124,117 @@ public class EnumTest extends TestDAO {
         CIRCLE {
             @Override
             public String toString() {
-                return "CIRCLE";
+                return "circle";
             }
         }
     }
 
     @Test
-    public void constantWithBody() {
+    public void plainQuestionMark() {
+        // same SQL for null and non-null values, and for constants with a body
+        assertThat(
+                new EnumParameter<>(Color.RED, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+        ).isEqualTo("?");
+        assertThat(
+                new EnumParameter<>((Color) null, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
+        ).isEqualTo("?");
         assertThat(
                 new EnumParameter<>(Shape.CIRCLE, EnumClassNameTranslator.SNAKE_CASE).getQuestionMark()
-        ).isEqualTo("?::shape");
+        ).isEqualTo("?");
+    }
+
+    /**
+     * Java enum type with a name that differs from the database type, and with
+     * constants that have a body and a different string representation.
+     */
+    enum Paint {
+        RED {
+            @Override
+            public String toString() {
+                return "rood";
+            }
+        },
+        GREEN,
+        BLUE,
+        YELLOW // not in the database
+    }
+
+    @Test
+    public void typeInferredFromContext() {
+        insertInto("colors").value("id", 15).value("color", Paint.RED).execute();
+        assertThat(
+                select("color").from("colors").where("id", 15).getEnum(Color.class)
+        ).isEqualTo(Color.RED);
+        assertThat(
+                select("color").from("colors").where("id", 15).getEnum(Paint.class)
+        ).isEqualTo(Paint.RED);
+        assertThat(
+                select("id").from("colors").where("color", Paint.RED).getInt()
+        ).isEqualTo(15);
+    }
+
+    @Test(expected = DataAccessException.class)
+    public void unknownConstant() {
+        insertInto("colors").value("id", 15).value("color", Paint.YELLOW).execute();
+    }
+
+    @Test
+    public void userWrittenQuestionMark() {
+        assertThat(
+                select("id").from("colors").where("color = ?", Color.BLUE).getInt()
+        ).isEqualTo(13);
+        assertThat(
+                select("id").from("colors").where("color IN (?, ?)", Color.RED).parameter(Color.BLUE).getInt()
+        ).isEqualTo(13);
+        sql("UPDATE colors SET color = ? WHERE id = ?").parameter(Color.GREEN).parameter(13).execute();
+        assertThat(
+                select("color").from("colors").where("id", 13).getEnum(Color.class)
+        ).isEqualTo(Color.GREEN);
+    }
+
+    @Test
+    public void setWithQuestionMark() {
+        update("colors").set("color = COALESCE(?, color)", (Color) null).where("id", 13).execute();
+        assertThat(
+                select("color").from("colors").where("id", 13).getEnum(Color.class)
+        ).isEqualTo(Color.BLUE);
+        update("colors").set("color = COALESCE(?, color)", Color.RED).where("id", 13).execute();
+        assertThat(
+                select("color").from("colors").where("id", 13).getEnum(Color.class)
+        ).isEqualTo(Color.RED);
+    }
+
+    @Test
+    public void selectList() {
+        assertThat(
+                select("color = ?").parameter(Color.BLUE).from("colors").where("id", 13).getOneBoolean()
+        ).isTrue();
+        // without context the parameter is treated as text
+        assertThat(
+                select("?").parameter(Color.RED).noFrom().getString()
+        ).isEqualTo("RED");
+        assertThat(
+                select("?").parameter(Color.RED).noFrom().getEnum(Color.class)
+        ).isEqualTo(Color.RED);
+    }
+
+    @Test
+    public void textColumn() {
+        insertInto("persons").value("name", Color.GREEN).value("number", 77).execute();
+        assertThat(
+                select("number").from("persons").where("name", Color.GREEN).getInt()
+        ).isEqualTo(77);
+    }
+
+    @Test
+    public void compositeWhere() {
+        assertThat(
+                select("id").from("colors")
+                        .where(compositeWhereClause()
+                                .where("color", Color.BLUE)
+                                .where("id > ?", 10))
+                        .getInt()
+        ).isEqualTo(13);
     }
 
     @Test

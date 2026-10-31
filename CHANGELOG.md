@@ -14,6 +14,13 @@ Changes
   `select("?").parameter(17).noFrom()`) now gets the type of the Java value instead of `text`.
   Too many parameters still cause an `IllegalArgumentException`, but too few parameters now cause a
   `DataAccessException` when the statement is executed.
+* **Changed behaviour:** enum parameters are no longer written as `?::type_name`. The value is
+  sent without a type and PostgreSQL infers the enumerated type from the context. As a consequence,
+  enum parameters now also work with question marks in your own SQL (for example `where("color = ?", Color.RED)`
+  or `sql(...).parameter(Color.RED)`), the names of the Java and database types no longer need to correspond,
+  and the translation of type names (`getEnumClassTranslator`) is no longer used.
+  The name of the constant is now taken from `name()` instead of `toString()`.
+  See [Enumerated types](docs/data-types.md#enumerated-types).
 * `set` now supports `String[][]`
 * Updates can take values from other tables with `from` (PostgreSQL `UPDATE … FROM`).
   See [Delete / update](docs/statements.md#delete--update).

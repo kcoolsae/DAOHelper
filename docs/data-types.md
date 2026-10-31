@@ -44,22 +44,26 @@ Array parameters can also be used in where clauses, for example
 Enumerated types
 ---
 
-Also enumerated types are supported, provided you follow the following conventions:
-* The name of the PostgreSQL enumerated type is the name of the Java enumerated type, in 'snake case'.
-  For example, a Java type `ColorName` corresponds to a PostgreSQL type `color_name`.
-* The PostgreSQL enumerated type elements must be the same as the element names, and also in upper case.
-* For example, in Postgres:
+Also enumerated types are supported, provided the elements of the PostgreSQL enumerated type
+are the same as the names of the Java enum constants, also in upper case. For example, in Postgres:
 
-      CREATE TYPE Color AS ENUM ('BLUE', 'RED', 'GREEN');
-  in Java:
+    CREATE TYPE Color AS ENUM ('BLUE', 'RED', 'GREEN');
 
-      enum Color {
-           BLUE, RED, GREEN;
-      }
+in Java:
 
-To use a different translation of type names, override the method `getEnumClassTranslator`
-in your DAC (a subclass of `BaseDAC`). For example, return `EnumClassNameTranslator.NO_OP` to use
-the Java type name unchanged, or provide your own implementation of `EnumClassNameTranslator`.
+    enum Color {
+        BLUE, RED, GREEN;
+    }
+
+The name of an enum constant is sent to the database without a type. PostgreSQL infers the type from the
+context, for example from the column it is compared with or assigned to. Hence the names of the Java and
+PostgreSQL types do not need to correspond, and enum parameters can also be used with question marks
+in your own SQL
+
+    select("id").from("colors").where("color IN (?, ?)", Color.RED).parameter(Color.BLUE)...
+
+When the context does not determine the type, the value is treated as text. If necessary, add a cast
+yourself, for example `?::color`.
 
 Enum parameters may be `null`, but then a cast is needed to select the correct method
 
